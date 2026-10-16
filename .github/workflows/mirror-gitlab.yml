@@ -1,0 +1,28 @@
+name: Mirror to GitLab
+
+on:
+  push:
+    branches: [ main ]
+  delete:
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4 
+        with:
+          fetch-depth: 0
+      - name: Mirror to GitLab
+        env:
+          GITLAB_USERNAME: ${{ secrets.GITLAB_USERNAME }}
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        run: |
+          git remote add gitlab https://${{ secrets.GITLAB_USERNAME }}:${{ secrets.GITLAB_TOKEN }}@gitlab.com/Fryrvo/Docs.git
+          git push --force gitlab main
+
+
+
+# Workflow credit (atleast where i copy form)
+# https://github.com/kanboard/kanboard/blob/main/.github/workflows/codeberg_mirror.yml
